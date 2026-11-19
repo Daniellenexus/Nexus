@@ -371,6 +371,26 @@
     }, { passive: true });
   }
 
+  // ---------- Google Ads: intenção de contato pelo WhatsApp ----------
+  // Não envia nome, telefone, especialidade ou mensagem do formulário.
+  function registrarContatoWhatsApp() {
+    try {
+      if (typeof window.gtag !== 'function') return;
+      window.gtag('event', 'conversion', {
+        send_to: 'AW-18582117759/VZqgCOj23LodEP-60pxF'
+      });
+    } catch (_) {
+      // A medição nunca deve impedir a abertura do WhatsApp.
+    }
+  }
+  document.addEventListener('click', (event) => {
+    const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
+    if (!link) return;
+    const destino = new URL(link.href, window.location.href);
+    if (destino.protocol === 'https:' && destino.hostname === 'wa.me' &&
+        destino.pathname === '/553191351242') registrarContatoWhatsApp();
+  });
+
   // ---------- Formulário → WhatsApp ----------
   (function formulario() {
     const form = $('#formContato');
@@ -404,6 +424,7 @@
         `Solução de interesse: ${d.solucao}`
       ].filter((l) => l !== null);
       const url = `https://wa.me/553191351242?text=${encodeURIComponent(linhas.join('\n'))}`;
+      registrarContatoWhatsApp();
       window.open(url, '_blank', 'noopener');
     });
   })();
